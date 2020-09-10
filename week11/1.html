@@ -5,20 +5,26 @@
     <title>Title</title>
 </head>
 <body>
+<input id="r" />
 <script>
     let callbacks = new Map();
+    let reactivities = new Map();
     let usedReactivities = [];
 
     let object = {
-        a: 1,
-        b: 2
+        r : 1,
+        g : 2,
+        e: 3,
     }
 
     let po = reactive(object);
 
     effect(() => {
-        console.log(po.a);
+       // console.log(po.a.b);
+        document.getElementById("r").value = po.r;
     })
+
+    document.getElementById("r").addEventListener("input", event => po.r = event.target.value);
 
     function effect(callback) {
         //callbacks.push(callback);
@@ -38,7 +44,11 @@
     }
 
     function reactive(object) {
-        return new Proxy(object, {
+
+        if (reactivities.has(object))
+            return reactivities.get(object);
+
+        let proxy =  new Proxy(object, {
             set(obj, prop, val) {
                 obj[prop] = val;
 
@@ -53,9 +63,15 @@
             },
             get(obj, prop) {
                 usedReactivities.push([obj, prop]);
+
+                if (typeof obj[prop] === "object")
+                    return reactive(obj[prop]);
                 return obj[prop];
             }
         })
+
+        reactivities.set(object, proxy);
+        return proxy;
     }
 </script>
 

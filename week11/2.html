@@ -1,0 +1,69 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <title>Title</title>
+</head>
+<body>
+<div id="container">左权，原名左纪权，号叔仁，1905年生于湖南醴陵。1924年到广州，进入孙中山大元帅府军政部主办的陆军讲武学校，后转入黄埔军校第一期。1925年加入中国共产党，并被选送到苏联留学，相继进入莫斯科中山大学和伏龙芝军事学院深造。1930年奉调回国，被分配到中央苏区工作。先后担任红军军官学校一分校教育长、新12军军长、红一方面军总司令部参谋处长、红15军军长兼政委、中革军委作战局局长、红一军团参谋长等职，多次参与指挥反“围剿”作战，参加了长征。
+
+    1937年8月，红军改编为八路军，左权被任命为八路军副参谋长。不久，他随朱德总司令、彭德怀副总司令率部东渡黄河，挺进华北，开辟抗日根据地。随后他还兼任八路军前方总部参谋长，在指挥作战和军队建设方面作出了突出贡献。特别是1940年参与领导了著名的百团大战，1941年取得保卫八路军黄崖洞兵工厂的“黄崖大捷”。1942年5月25日，在指挥八路军总部机关转移时，被敌人的炮弹击中牺牲，时年37岁。
+
+    左权长期担任参谋长工作。著名作家刘白羽1939年春天曾在八路军总部见到左权，发现他是司令部里“最繁忙的人”，“除了重大的事由朱总司令决定之外，一般工作都是他处理”。左权牺牲后，晋察冀军区司令员兼政治委员聂荣臻在悼念左权的文章中说：“军队的一切建设, 部队的管理教育, 战斗战役的组织,一切军机的运筹帷幄, 无不精细周详, 大事不悸, 小事不忽, 在日常工作中, 尤其是敢于负责, 决非敷衍苟且之徒可比。”时任八路军一二九师政治部主任蔡树藩回忆说：“对于工作, 左权同志有着认真不懈的工作精神, 每天都要做到十五六个小时工作, 往往工作到更深人静的半夜。”抗战期间曾担任左权警卫员的陈利财回忆说：“左副参谋长的工作是非常繁忙而紧张的，每天工作在16个小时以上。有时朱总、彭总去延安开会，总部就只剩下他一个人，他从早到晚不停地忙着。”
+
+    左权读过两所军事院校，又喜欢读书，军事理论水平很高，撰写了许多关于游击战争的论著。周恩来称他“是有理论修养同时又有实践经验的军事家”。朱德评价他“在军事理论、战略战术、军事建设、参谋工作、后勤工作等方面，有极其丰富与辉煌的建树，是中国军事界不可多得的人才”。</div>
+<div id="draggable" style="display: inline-block; width: 100px; height: 100px; background-color: deeppink;"></div>
+<script>
+    let draggable = document.getElementById("draggable");
+
+    let baseX = 0, baseY = 0;
+
+    draggable.addEventListener("mousedown", function (event) {
+        let startX = event.clientX;
+        let startY = event.clientY;
+
+        let up = event => {
+            baseX = baseX + event.clientX - startX;
+            baseY = baseY + event.clientY - startY;
+            document.removeEventListener("mousemove", move);
+            document.removeEventListener("mouseup", up);
+        };
+        let move = event => {
+            let range = getNearest(event.clientX, event.clientY);
+            range.insertNode(draggable);
+            //draggable.style.transform = `translate(${baseX + event.clientX - startX}px, ${baseY + event.clientY - startY}px)`
+        };
+        document.addEventListener("mousemove", move);
+        document.addEventListener("mouseup", up);
+    })
+
+    let ranges = [];
+
+    let container = document.getElementById("container");
+    for(let i = 0; i < container.childNodes[0].textContent.length; i++) {
+        let range = document.createRange();
+        range.setStart(container.childNodes[0], i);
+        range.setEnd(container.childNodes[0], i);
+        ranges.push(range);
+    }
+
+    function getNearest(x, y) {
+        let min = Infinity;
+        let nearest = null;
+
+        for (let range of ranges) {
+            let rect = range.getBoundingClientRect();
+
+            let distance = (rect.x - x) ** 2 + (rect.y - y) ** 2;
+            if (distance < min) {
+                nearest = range;
+                min = distance;
+            }
+        }
+        return nearest;
+    }
+
+    document.addEventListener("selectstart", event => event.preventDefault());
+</script>
+</body>
+</html>
