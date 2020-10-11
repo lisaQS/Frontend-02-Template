@@ -3,9 +3,15 @@
 <head>
     <meta charset="UTF-8">
     <title>Title</title>
-    <script src="./gesture.js"></script>
 </head>
 <body oncontextmenu="event.preventDefault()">
+<script type="module">
+    import { enableGesture } from "./gesture.js";
+    enableGesture(document.documentElement);
 
+    document.documentElement.addEventListener("tap", () => {
+        console.log("tap event trigger!");
+    })
+</script>
 </body>
 </html>
